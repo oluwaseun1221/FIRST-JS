@@ -1,8 +1,23 @@
-var scores, roundScore, activePlayer, gamePlaying;
+/*  
+        YOUR 3 CHALLENGES
+        change the game to follow this rules:
+
+        1. A player looses his Enter score when he/she rolls two 6 in a row.
+        After that, it's the next player's turn. (Hint: Always save the previous dice roll
+            in seperate variable)
+        2. Add an input field to the HTML where players can set the winning score, so that they can change 
+        the predefined score of 100. (Hint: you can read that value with the .value property in JavaScript.
+            This is a good oportunity to use google to figure this out:)
+        3. Add another dice to the game, so that there are two dices now. The player looses his/her current 
+        score when one of them is a 1. (Hint: you will need CSS to position the second dice, so take a look at
+            the CSS code for the first one.)
+            */
+
+            var scores, roundScore, activePlayer, gamePlaying;
 
 init();
   
-
+var lastDice;
 
 
 
@@ -12,15 +27,35 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
     if(gamePlaying){
 
          // 1. random number
-    var dice = Math.floor(Math.random() * 6) + 1;
+    var dice1 = Math.floor(Math.random() * 6) + 1;
+    var dice2 = Math.floor(Math.random() * 6) + 1;
+
 
     // 2. display the result
-    var diceDom = document.querySelector('.dice');
-    diceDom.style.display ='block';
-    diceDom.src = 'dice-' + dice + '.png';
+    document.getElementById('dice-1').style.display = 'block';
+    document.getElementById('dice-2').style.display = 'block';
+    document.getElementById('dice-1').src = 'dice-' + dice1 + '.png';
+    document.getElementById('dice-2').src = 'dice-' + dice2 + '.png';
 
-    //3. update round score IF the rolled number was not a 1 
-        if (dice !== 1) {
+    //3. update the round score IF the rolled number was not a 1 
+    if (dice1 !== 1 && dice2 !==1) {
+        //Add score
+
+        roundScore += dice1 + dice2;
+        document.querySelector('#current-' + activePlayer).textContent = roundScore;
+    }else{
+        //Next player
+       nextPlayer();
+    }
+
+
+/*
+    if(dice === 6 && lastDice === 6) {
+        //player looses score
+        scores[activePlayer] = 0;
+        document.querySelector('#score-' + activePlayer).textContent = '0';
+        nextPlayer();
+    } else if (dice !== 1) {
             //Add score
 
             roundScore += dice;
@@ -29,7 +64,13 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
             //Next player
            nextPlayer();
         }
+
+        lastDice = dice;
+
+*/
     }
+
+    
    
     });
 
@@ -44,11 +85,24 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
 
             document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
 
+            var input = document.querySelector('.final-score').value;
+            var winningScore;
+
+            //Undefined, 0, null or "" are COERCED to false
+            //Anything else is COERCED to true
+
+            if(input){
+                var winningScore = input;
+            }else {
+                winningScore = 100;
+            }
+
 
             //check if player won the game
             if (scores[activePlayer] >=100) {
                 document.querySelector('#name-' + activePlayer).textContent ='Winner'
-                document.querySelector('.dice').style.display = 'none';
+                document.getElementById('dice-1').style.display = 'none';
+                document.getElementById('dice-2').style.display = 'none';
                 document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
                 document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
                 gamePlaying = false;
@@ -80,7 +134,8 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
             //document.querySelector('.player-1-panel').classList.add('active');
 
 
-            document.querySelector('.dice').style.display ='none';
+            document.getElementById('dice-1').style.display ='none';
+            document.getElementById('dice-2').style.display = 'none';
 
         }
 
@@ -98,7 +153,8 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
 
             //document.querySelector('#current-' + activePlayer).textContent = dice;
 
-         document.querySelector('.dice').style.display ='none';
+         document.getElementById('dice-1').style.display ='none';
+         document.getElementById('dice-2').style.display ='none';
 
             document.getElementById('score-0').textContent = '0';
             document.getElementById('score-1').textContent = '0';
